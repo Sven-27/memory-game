@@ -1,4 +1,4 @@
 {
-    "jslint.version": "es6",
-    
+  "jslint.version": "es6",
+  "liveServer.settings.port": 5501,
 }
