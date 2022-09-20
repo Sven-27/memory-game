@@ -1,11 +1,35 @@
 "use strict";
 
+class Card{
+  constructor(card1, card2=card1, set=card1, sound=card1){
+    this.card1 = card1;
+    this.card2 = card2;
+    this.set = set;
+    this.sound = sound;
+  }
+}
 // maak een const myField en koppel deze aan de div met id="field"
 const myField = document.getElementById("field");
 
 // de volgende regel krijg je vast cadeau:
-const myCardSet = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+const myDblCardArray = myCardArray.concat(...myCardArray)
+// console.log(myDblCardArray)
 
+// document.onload = populateField();
+
+function fyShuffle(array){
+let i = array.length;
+  while (--i > 0) {
+    let randIndex = Math.floor(Math.random() * (i + 1));
+    [array[randIndex], array[i]] = [array[i], array[randIndex]];
+  }
+    return array;
+}
+
+fyShuffle(myDblCardArray);
+
+const myCardSet = myDblCardArray.map(card => new Card(card));
 
 // schrijf hier de nieuwe functie populateField()
 function populateField() {
@@ -14,15 +38,16 @@ function populateField() {
     // De volgende statements komen allemaal in de loop:
     // laat met de method document.createElement() een nieuw div-element aanmaken en stop die in een nieuwe let 'newTile'
     let newTile = document.createElement("div");
+    newTile.setAttribute("class", "board6");
     // laat  met de method document.createElement() een nieuw img-element aanmaken en stop die in een nieuwe let 'newCard'
     let newCard = document.createElement("img");
     // creëer een nieuwe let 'imageURL' en laat via concatination een relatieve verwijzing naar de afbeelding uit het array waar over geïtereerd wordt die de uiteindelijke vorm moet krijgen "url(img/naamDier.jpg)" waarbij naamDier in dit geval steeds een andere naam is uit het array.
-    let imageURL = `img/${card}.jpg`;
+    let imageURL = `img/${card.card1}.jpg`;
     console.log(imageURL);
     // Ken deze imageURL via setAttribute() toe aan het src attribute van let 'newCard'.
     newCard.setAttribute("src", imageURL);
     // Ken ook de naam van het dier via setAttribute() toe aan de name attribute van de let 'newCard';
-    newCard.setAttribute("name", card);
+    newCard.setAttribute("name", card.card1);
     // Ken via de appendChild() method het element 'newCard' toe aan 'newTile'
     newTile.appendChild(newCard);
     // Ken via de appendChild() method het element 'newTile' toe aan 'myField'
@@ -45,3 +70,4 @@ myField.addEventListener("click", onClickCard);
 
 // geef het document een event listener die bij het laden van de pagina de functie populateField aanroept
 document.addEventListener("DOMContentLoaded", populateField);
+
