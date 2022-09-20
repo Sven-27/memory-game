@@ -1,5 +1,6 @@
 "use strict";
 
+// Class template for card objects
 class Card{
   constructor(card1, card2=card1, set=card1, sound=card1){
     this.card1 = card1;
@@ -13,11 +14,14 @@ const myField = document.getElementById("field");
 
 // de volgende regel krijg je vast cadeau:
 const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+
+// Het aantal kaarten verdubbelen zodat elke kaart 2 keer op het scherm komt. 
 const myDblCardArray = myCardArray.concat(...myCardArray)
-// console.log(myDblCardArray)
+console.log(myDblCardArray)
 
 // document.onload = populateField();
 
+// Kaarten schudden zodat ze bij elke refresh op een andere plek staan.
 function fyShuffle(array){
 let i = array.length;
   while (--i > 0) {
@@ -27,8 +31,10 @@ let i = array.length;
     return array;
 }
 
+// de array met de dubbele kaarten schudden via deze callback
 fyShuffle(myDblCardArray);
 
+// koppelen aan de class Card en objecten van de kaarten maken
 const myCardSet = myDblCardArray.map(card => new Card(card));
 
 // schrijf hier de nieuwe functie populateField()
