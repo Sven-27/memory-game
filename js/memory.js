@@ -1,6 +1,6 @@
 "use strict";
 
-// Class template for card objects
+// Template voor de card objects
 class Card{
   constructor(card1, card2=card1, set=card1, sound=card1){
     this.card1 = card1;
@@ -9,19 +9,17 @@ class Card{
     this.sound = sound;
   }
 }
-// maak een const myField en koppel deze aan de div met id="field"
+// variabele die is gkoppeld aan het element met id 'myField' in de HTML"
 const myField = document.getElementById("field");
 
-// de volgende regel krijg je vast cadeau:
+// lijst met de namen van afbeeldingen
 const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
 
 // Het aantal kaarten verdubbelen zodat elke kaart 2 keer op het scherm komt. 
 const myDblCardArray = myCardArray.concat(...myCardArray)
 console.log(myDblCardArray)
 
-// document.onload = populateField();
-
-// Kaarten schudden zodat ze bij elke refresh op een andere plek staan.
+// Functie om de kaarten willekeurig te schudden.
 function fyShuffle(array){
 let i = array.length;
   while (--i > 0) {
@@ -31,49 +29,46 @@ let i = array.length;
     return array;
 }
 
-// de array met de dubbele kaarten schudden via deze callback
+// kaarten worden willekeurig neergelegd
 fyShuffle(myDblCardArray);
 
-// koppelen aan de class Card en objecten van de kaarten maken
+// images returnen als class objecten
 const myCardSet = myDblCardArray.map(card => new Card(card));
 
-// schrijf hier de nieuwe functie populateField()
+// Nieuwe elementen creeren om images op het scherm te tonen
 function populateField() {
-  // maak binnen deze nieuwe functie een for loop waarin over de array myCardSet geïtereerd wordt (Mag ook met forEach, dat is zelfs beter).
+  // Loop door de array met kaarten en maak voor elke kaart een nieuw element aan.
   myCardSet.forEach(card => {
-    // De volgende statements komen allemaal in de loop:
-    // laat met de method document.createElement() een nieuw div-element aanmaken en stop die in een nieuwe let 'newTile'
+    // creeer container elementen voor de kaarten
     let newTile = document.createElement("div");
+    // Voeg een class aan het element toe voor styling
     newTile.setAttribute("class", "board6");
-    // laat  met de method document.createElement() een nieuw img-element aanmaken en stop die in een nieuwe let 'newCard'
+    // creeer img elementen voor de kaarten
     let newCard = document.createElement("img");
-    // creëer een nieuwe let 'imageURL' en laat via concatination een relatieve verwijzing naar de afbeelding uit het array waar over geïtereerd wordt die de uiteindelijke vorm moet krijgen "url(img/naamDier.jpg)" waarbij naamDier in dit geval steeds een andere naam is uit het array.
+    // variable die de url van de afbeeldingen als waarde heeft
     let imageURL = `img/${card.card1}.jpg`;
     console.log(imageURL);
-    // Ken deze imageURL via setAttribute() toe aan het src attribute van let 'newCard'.
+    // Voeg de image url van de afbeeldingen toe aan de src attribuut van de img elementen
     newCard.setAttribute("src", imageURL);
-    // Ken ook de naam van het dier via setAttribute() toe aan de name attribute van de let 'newCard';
+    // Naam van het dier toevoegen aan de img elementen
     newCard.setAttribute("name", card.card1);
-    // Ken via de appendChild() method het element 'newCard' toe aan 'newTile'
+    // Connect de img element aan de container elementen als child
     newTile.appendChild(newCard);
-    // Ken via de appendChild() method het element 'newTile' toe aan 'myField'
+    // Connect de container elementen aan het element met id 'myField' in de HTML als child
     myField.appendChild(newTile);
   })
 }
 
-
-// schrijf hier de functie onClickCard(e)
-
+// Testen om te kijken welke naam verschijnt als je op een kaart klikt
 function onClickCard(e) {
-  // Zorg er voor dat als deze functie wordt uitgevoerd, m.b.v. de method getAttribute() in het console de naam van het aangeklikte dier getoond wordt.
-  // Hint, je moet hierbij gebruik maken van de verwijzing e.target omdat je de naam van het element wilt weten waar op geklikt is, dus die het 'click' event verstuurd heeft.
+  // Loggen in de console welke naam er verschijnt als je op een kaart klikt
   console.log(e.target.getAttribute("name"));
 }
 
 
-// Geef myField een event listener die de functie onClickCard aanroept als er op geklikt wordt
+// Click event maken voor de kaarten 
 myField.addEventListener("click", onClickCard);
 
-// geef het document een event listener die bij het laden van de pagina de functie populateField aanroept
+// Event om de kaarten op het scherm te tonen na het laden van de pagina
 document.addEventListener("DOMContentLoaded", populateField);
 
