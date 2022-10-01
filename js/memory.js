@@ -1,4 +1,9 @@
 "use strict";
+// Variabele voor de html select element
+const select = document.getElementById("speelveld");
+
+// Variabele voor de grootte van het speelveld
+let boardClass = "";
 
 // Template voor de card objects
 class Card{
@@ -14,10 +19,12 @@ const myField = document.getElementById("field");
 
 // lijst met de namen van afbeeldingen
 const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
-
+console.log(myCardArray.length)
 // Het aantal kaarten verdubbelen zodat elke kaart 2 keer op het scherm komt. 
 const myDblCardArray = myCardArray.concat(...myCardArray)
 console.log(myDblCardArray)
+
+
 
 // Functie om de kaarten willekeurig te schudden.
 function fyShuffle(array){
@@ -30,19 +37,40 @@ let i = array.length;
 }
 
 // kaarten worden willekeurig neergelegd
-fyShuffle(myDblCardArray);
+fyShuffle(myCardArray);
 
 // images returnen als class objecten
-const myCardSet = myDblCardArray.map(card => new Card(card));
+const myCardSet = myCardArray.map(card => new Card(card));
 
 // Nieuwe elementen creeren om images op het scherm te tonen
+function onSelectFieldSize(e){
+  switch(e.target.value){
+    case "4":
+      boardClass = "board4";
+      console.log(boardClass = "board4");
+      break;
+    case "5":
+      boardClass = "board5";
+      console.log(boardClass = "board5");
+      break;
+    case "6":
+      boardClass = "board6";
+      console.log(boardClass = "board6");
+      break;
+    default:
+      boardClass = "";
+  }
+  // call functie om de kaarten op het scherm te tonen
+  populateField();
+}
+
 function populateField() {
   // Loop door de array met kaarten en maak voor elke kaart een nieuw element aan.
   myCardSet.forEach(card => {
     // creeer container elementen voor de kaarten
     let newTile = document.createElement("div");
     // Voeg een class aan het element toe voor styling
-    newTile.setAttribute("class", "board6");
+    newTile.setAttribute("class", boardClass);
     // creeer img elementen voor de kaarten
     let newCard = document.createElement("img");
     // variable die de url van de afbeeldingen als waarde heeft
@@ -52,23 +80,38 @@ function populateField() {
     newCard.setAttribute("src", imageURL);
     // Naam van het dier toevoegen aan de img elementen
     newCard.setAttribute("name", card.card1);
+    // Creer img elementen om de afbeeldingen af te dekken
+    let newCover = document.createElement("img");
+    // Voeg de image url van de afbeeldingen toe aan de src attribuut van de img elementen
+    newCover.setAttribute("src", "img/cover.png");
+    // Naam van het dier toevoegen aan de img elementen
+    newCover.setAttribute("name", card.card1);
+    // Voeg een class aan het element toe voor styling
+    newCover.setAttribute("class", "covered");
     // Connect de img element aan de container elementen als child
     newTile.appendChild(newCard);
+    newTile.appendChild(newCover);
     // Connect de container elementen aan het element met id 'myField' in de HTML als child
     myField.appendChild(newTile);
   })
 }
 
-// Testen om te kijken welke naam verschijnt als je op een kaart klikt
+// Verwijder cover als op kaart geklikt wordt
 function onClickCard(e) {
-  // Loggen in de console welke naam er verschijnt als je op een kaart klikt
-  console.log(e.target.getAttribute("name"));
+  // check of classname gelijk is aan covered
+  if(e.target.className === "covered"){
+    // verander classname naar uncovered
+    e.target.className = "uncovered";
+    //Loggen in console welke naam er verschijnt als je op een kaart klikt
+    console.log(e.target.parentNode.firstChild.getAttribute("name"));
+  }
 }
-
 
 // Click event maken voor de kaarten 
 myField.addEventListener("click", onClickCard);
 
 // Event om de kaarten op het scherm te tonen na het laden van de pagina
-document.addEventListener("DOMContentLoaded", populateField);
+// document.addEventListener("DOMContentLoaded", populateField);
 
+// Event listener voor de grootte van het speelveld
+select.addEventListener("change", onSelectFieldSize);
