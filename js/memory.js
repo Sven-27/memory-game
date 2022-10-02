@@ -2,10 +2,13 @@
 // Variabele voor de html select element
 const select = document.getElementById("speelveld");
 
+// variabele die is gkoppeld aan het element met id 'myField' in de HTML"
+const myField = document.getElementById("field");
+
 // Variabele voor de grootte van het speelveld
 let boardClass = "";
 
-// Variabele voor de dubbele kaarten ten opzichte de grootte van het
+// Variabele voor de dubbele kaarten ten opzichte de grootte van het speelveld
 let CardSetArray = [];
 
 // Template voor de card objects
@@ -17,8 +20,6 @@ class Card {
     this.sound = sound;
   }
 }
-// variabele die is gkoppeld aan het element met id 'myField' in de HTML"
-const myField = document.getElementById("field");
 
 // lijst met de namen van afbeeldingen
 const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
@@ -38,7 +39,7 @@ fyShuffle(myCardArray);
 
 // Selecteren van de grootte van het speelveld
 function onSelectFieldSize(e) {
-  // let CardSetArray = [];
+  // Instellen van de grootte van het speelveld afhankelijk van welke optie er gekozen is
   switch (e.target.value) {
     case "4":
       boardClass = "board4";
@@ -55,6 +56,7 @@ function onSelectFieldSize(e) {
     default:
       boardClass = "";
   }
+  // Kaarten nogmaals schudden
   fyShuffle(CardSetArray)
   console.log(CardSetArray)
   // call functie om de kaarten op het scherm te tonen
