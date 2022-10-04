@@ -58,22 +58,17 @@ function onSelectFieldSize(e) {
   }
   // Kaarten nogmaals schudden
   fyShuffle(CardSetArray)
-  console.log(CardSetArray)
+
+  // reset veld
+  if(myField) {
+    myField.innerHTML = "";
+  }
+
   // call functie om de kaarten op het scherm te tonen
   populateField();
 }
 
-// const myDblCardArray = myCardArray.slice(0, 8).concat(...myCardArray)
-
-// console.log(doubleCards)
-// Het aantal kaarten verdubbelen zodat elke kaart 2 keer op het scherm komt. 
-// console.log(myDblCardArray)
-
-// images returnen als class objecten
-// const myCardSet = CardSetArray.map(card => new Card(card));
-
 // Nieuwe elementen creeren om images op het scherm te tonen
-
 function populateField() {
   // Loop door de array met kaarten en maak voor elke kaart een nieuw element aan.
   CardSetArray.map(card => new Card(card)).forEach(card => {
@@ -118,9 +113,6 @@ function onClickCard(e) {
 
 // Click event maken voor de kaarten 
 myField.addEventListener("click", onClickCard);
-
-// Event om de kaarten op het scherm te tonen na het laden van de pagina
-// document.addEventListener("DOMContentLoaded", populateField);
 
 // Event listener voor de grootte van het speelveld
 select.addEventListener("change", onSelectFieldSize);

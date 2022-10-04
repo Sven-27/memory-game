@@ -9,14 +9,15 @@
 
 <body>
 
-<div id="field"></div>
+  <select name="speelveld" id="speelveld">
+    <option selected disabled value="veld">Kies een speelveld</option>
+    <option value="4">4 x 4</option>
+    <option value="5">5 x 5</option>
+    <option value="6">6 x 6</option>
+  </select>
 
-<select name="speelveld" id="speelveld">
-  <option selected disabled value="veld">Kies een speelveld</option>
-  <option value="4">4 x 4</option>
-  <option value="5">5 x 5</option>
-  <option value="6">6 x 6</option>
-</select>
+  <div id="field"></div>
+
 		
 	<script src="./js/memory.js" type="module"></script>
 </body>
