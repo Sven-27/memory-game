@@ -8,21 +8,25 @@ const myField = document.getElementById("field");
 // Variabele voor de grootte van het speelveld
 let boardClass = "";
 
-// Variabele voor de dubbele kaarten ten opzichte de grootte van het speelveld
-let CardSetArray = [];
+// Array met kaarten vauit json bestand
+let myCardArray;
 
 // Template voor de card objects
 class Card {
-  constructor(card1, card2 = card1, set = card1, sound = card1) {
-    this.card1 = card1;
-    this.card2 = card2;
-    this.set = set;
-    this.sound = sound;
+  constructor(cardObject) {
+    this.card1 = cardObject.card1;
+    this.card2 = cardObject.card2;
+    this.set = cardObject.set;
+    this.sound = cardObject.sound;
   }
 }
 
-// lijst met de namen van afbeeldingen
-const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+fetch("js/cards.json")
+.then(response => response.json())
+.then(data => {
+   myCardArray = data.map(card => new Card(card));
+  console.log(myCardArray);
+});
 
 // Functie om de kaarten willekeurig te schudden.
 function fyShuffle(array) {
@@ -34,44 +38,41 @@ function fyShuffle(array) {
   return array;
 }
 
-// kaarten worden willekeurig neergelegd
-fyShuffle(myCardArray);
-
 // Selecteren van de grootte van het speelveld
 function onSelectFieldSize(e) {
+  // kaarten worden willekeurig neergelegd
+  let customSizeArray = fyShuffle(myCardArray);
   // Instellen van de grootte van het speelveld afhankelijk van welke optie er gekozen is
   switch (e.target.value) {
     case "4":
       boardClass = "board4";
-      CardSetArray = myCardArray.slice(0, 8).concat(...myCardArray.slice(0, 8))
+      customSizeArray = myCardArray.slice(0, 8)
       break;
     case "5":
       boardClass = "board5";
-      CardSetArray = myCardArray.slice(0, 12).concat(...myCardArray.slice(0, 12))
+      customSizeArray = myCardArray.slice(0, 12)
       break;
     case "6":
       boardClass = "board6";
-      CardSetArray = myCardArray.slice(0, 18).concat(...myCardArray.slice(0, 18))
+      customSizeArray = myCardArray.slice(0, 18)
       break;
     default:
       boardClass = "";
   }
+  let DblCustomSizeArray = customSizeArray.concat(...customSizeArray); 
   // Kaarten nogmaals schudden
-  fyShuffle(CardSetArray)
-
-  // reset veld
-  if(myField) {
-    myField.innerHTML = "";
-  }
+  DblCustomSizeArray = fyShuffle(DblCustomSizeArray)
 
   // call functie om de kaarten op het scherm te tonen
-  populateField();
+  populateField(DblCustomSizeArray);
 }
 
 // Nieuwe elementen creeren om images op het scherm te tonen
-function populateField() {
+function populateField(cardSet) {
+  // Bestaande velden verwijderen
+  myField.innerHTML = "";
   // Loop door de array met kaarten en maak voor elke kaart een nieuw element aan.
-  CardSetArray.map(card => new Card(card)).forEach(card => {
+  cardSet.map(card => new Card(card)).forEach(card => {
     // creeer container elementen voor de kaarten
     let newTile = document.createElement("div");
     // Voeg een class aan het element toe voor styling
