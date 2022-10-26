@@ -2,14 +2,29 @@
 // Variabele voor de html select element
 const select = document.getElementById("speelveld");
 
-// variabele die is gkoppeld aan het element met id 'myField' in de HTML"
+// variabele die is gkoppeld aan het element met betreffende id in de HTML"
 const myField = document.getElementById("field");
+const totalTurns = document.getElementById("totalCount");
+const success = document.getElementById("successCount");
 
 // Variabele voor de grootte van het speelveld
 let boardClass = "";
 
 // Array met kaarten vauit json bestand
 let myCardArray;
+
+//geselecteerde kaarten opslaan in array
+let selectedCards = [];
+
+//variabele voor te kijken of kaarten overeenkomen
+let cardOne, cardTwo;
+
+//variabele om aantal beuten bij te houden
+let totalCount = 0;
+let successCount = 0;
+
+//variable voor de tijd bij te houden
+let time = 0;
 
 // Template voor de card objects
 class Card {
@@ -36,6 +51,17 @@ function fyShuffle(array) {
     [array[randIndex], array[i]] = [array[i], array[randIndex]];
   }
   return array;
+}
+
+function nextMove(){
+  totalCount++;
+  totalTurns.innerHTML = totalCount;
+}
+
+function keepScore() {
+  successCount++;
+  success.innerHTML = successCount;
+
 }
 
 // Selecteren van de grootte van het speelveld
@@ -72,7 +98,7 @@ function populateField(cardSet) {
   // Bestaande velden verwijderen
   myField.innerHTML = "";
   // Loop door de array met kaarten en maak voor elke kaart een nieuw element aan.
-  cardSet.map(card => new Card(card)).forEach(card => {
+  cardSet.forEach(card => {
     // creeer container elementen voor de kaarten
     let newTile = document.createElement("div");
     // Voeg een class aan het element toe voor styling
@@ -109,6 +135,49 @@ function onClickCard(e) {
     e.target.className = "uncovered";
     //Loggen in console welke naam er verschijnt als je op een kaart klikt
     console.log(e.target.parentNode.firstChild.getAttribute("name"));
+  }
+
+  if(selectedCards.length === 1) {
+    myField.removeEventListener("click", onClickCard);
+  }
+
+  evaluateMatch(e.target.name);
+}
+
+function evaluateMatch(name){
+  if(selectedCards.length === 0){
+    selectedCards.push(name);
+    cardOne = name;
+    console.log(selectedCards);
+    console.log(cardOne);
+  } else if(selectedCards.length === 1){
+    selectedCards.push(name);
+    cardTwo = name;
+    if(cardOne === cardTwo){
+      console.log("match");
+      setTimeout(function () {
+        selectedCards.forEach(card => {
+          let cardElement = document.getElementsByName(card);
+          cardElement.forEach(element => {
+            element.parentNode.style.display = "none";
+          })
+        })
+        selectedCards = [];
+        myField.addEventListener("click", onClickCard);
+      }, 1000)
+      keepScore()
+    } else {
+      console.log("no match");
+      setTimeout(function(){
+        let uncoveredCards = document.querySelectorAll(".uncovered");
+        uncoveredCards.forEach(card => {
+          card.className = "covered";
+        })
+        selectedCards = [];
+        myField.addEventListener("click", onClickCard);
+      }, 1000)
+    }
+    nextMove()
   }
 }
 

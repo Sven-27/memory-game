@@ -8,14 +8,20 @@
 </head>
 
 <body>
+  <div id="game">
+    <select name="speelveld" id="speelveld">
+      <option selected disabled value="veld">Kies een speelveld</option>
+      <option value="4">4 x 4</option>
+      <option value="5">5 x 5</option>
+      <option value="6">6 x 6</option>
+    </select>
+    <div id="score">
+      <p id="totalTurns">Totaal aantal beurten: <span id="totalCount">0</span></p>
+      <p id="success">Succesvolle beurten: <span id="successCount">0</span></p>
 
-  <select name="speelveld" id="speelveld">
-    <option selected disabled value="veld">Kies een speelveld</option>
-    <option value="4">4 x 4</option>
-    <option value="5">5 x 5</option>
-    <option value="6">6 x 6</option>
-  </select>
-
+      <p>Tijd verstreken: <span id="timeValue">0</span></p>
+    </div>
+  </div>
   <div id="field"></div>
 
 		

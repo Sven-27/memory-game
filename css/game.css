@@ -1,3 +1,26 @@
+#game{
+  display: flex;
+  height: 2rem;
+  margin-inline-start: 1rem;
+  margin-block-end: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+#score{
+  display: flex;
+  height: 2rem;
+  align-items: center;
+}
+
+#success,
+#speelveld,
+#totalTurns{
+  margin-inline-end: 1rem;
+}
+
+
+
 #field {
   display: flex;
   flex-wrap: wrap;
@@ -49,6 +72,11 @@ img {
 #field .uncovered{
   display: none;
 }
+
+#field .hidden{
+  display: none;
+}
+
 
 @media screen and (min-width: 768px) {
   #field {
