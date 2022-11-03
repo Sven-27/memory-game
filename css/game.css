@@ -1,21 +1,29 @@
 #game{
   display: flex;
   height: 2rem;
-  margin-inline-start: 1rem;
-  margin-block-end: 1rem;
+  margin-block-end: .6rem;
   width: 100%;
   justify-content: center;
 }
 
+#welkom{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
 #score{
   display: flex;
-  height: 2rem;
   align-items: center;
 }
 
 #success,
 #speelveld,
-#totalTurns{
+#totalTurns,
+#elapsed-time{
   margin-inline-end: 1rem;
 }
 
@@ -33,6 +41,16 @@
   padding: 5px;
   position: relative;
 }
+
+#field>div>a{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid blue;
+}
+
 #field img {
   width: 100%;
 }
@@ -73,9 +91,6 @@ img {
   display: none;
 }
 
-#field .hidden{
-  display: none;
-}
 
 
 @media screen and (min-width: 768px) {

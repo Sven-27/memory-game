@@ -8,6 +8,7 @@
 </head>
 
 <body>
+  <p id="welkom"></p>
   <div id="game">
     <select name="speelveld" id="speelveld">
       <option selected disabled value="veld">Kies een speelveld</option>
@@ -19,11 +20,11 @@
       <p id="totalTurns">Totaal aantal beurten: <span id="totalCount">0</span></p>
       <p id="success">Succesvolle beurten: <span id="successCount">0</span></p>
 
-      <p>Tijd verstreken: <span id="timeValue">0</span></p>
+      <p id="elapsed-time">Tijd verstreken: <span id="time">00:00</span></p>
+      <button id="reset">Reset Game</button>
     </div>
   </div>
   <div id="field"></div>
-
 		
 	<script src="./js/memory.js" type="module"></script>
 </body>
