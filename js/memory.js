@@ -32,7 +32,7 @@ let seconds = 0;
 let timer;
 
 // Naam invoeren
-const firstName = prompt("Wat is je naam?");
+
 
 // Template voor de card objects
 class Card {
@@ -53,8 +53,14 @@ fetch("js/cards.json")
 });
 
 // popup om naam in te vullen
-function enterName(){
-  document.getElementById("welkom").innerHTML = `Welkom ${firstName}!`;
+function setName(){
+  if(!localStorage.hasOwnProperty("name")){
+    const firstName = prompt("Wat is je naam?");
+    localStorage.setItem("name", JSON.stringify(firstName));
+  }else{
+    alert(`Welkom terug ${JSON.parse(localStorage.getItem("name"))}`);
+  }
+  document.getElementById("welkom").innerHTML = `Welkom ${JSON.parse(localStorage.getItem("name")) }!`;
 }
 
 
@@ -201,17 +207,14 @@ function onClickCard(e) {
   // Stopt de timer als alle kaarten zijn geraden
   if (boardClass = "board4" && successCount === 8) {
     stopTimer();
-    saveData();
   }
   if (boardClass = "board5" && successCount === 12) {
     stopTimer();
-    saveData();
   }
   if (boardClass = "board6" && successCount === 18) {
     stopTimer();
-    saveData();
   }
-
+  saveData();
 }
 
 function playSound(name){
@@ -286,17 +289,15 @@ function resetGame(){
 }
 
 function saveData(){
-  let name = firstName;
-  let turns = totalTurns.innerHTML;
-  let totalTime = time.innerHTML;
-  let successTurns = success.innerHTML;
+  let attempts = totalTurns.innerHTML;
+  let timer = time.innerHTML;
+  let matching = success.innerHTML;
   let board = select.value;
   let data = {
-    name: name,
-    turns: turns,
-    success: successTurns,
-    time: totalTime,
-    board: board
+    attempts,
+    matching,
+    timer,
+    board
   }
   console.log(data);
   let dataString = JSON.stringify(data);
@@ -313,5 +314,5 @@ select.addEventListener("change", onSelectFieldSize);
 resetButton.addEventListener("click", resetGame);
 
 // Event listener voor popup om naam in te vullen
-document.addEventListener("DOMContentLoaded", enterName);
+document.addEventListener("DOMContentLoaded", setName);
 
