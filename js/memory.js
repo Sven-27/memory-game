@@ -9,6 +9,8 @@ const totalTurns = document.getElementById("totalCount");
 const success = document.getElementById("successCount");
 const resetButton = document.getElementById("reset");
 const time = document.getElementById("time");
+const highScore = document.getElementById("high-scores");
+const highScoreList = document.getElementById("high-scores-list");
 
 // Variabele voor de grootte van het speelveld
 let boardClass = "";
@@ -29,10 +31,13 @@ let successCount = 0;
 //variable voor de tijd bij te houden
 let minutes = 0;
 let seconds = 0;
-let timer;
+let timer = 0;
 
 // Naam invoeren
+let firstName
 
+//get highscores from localstorage
+const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 
 // Template voor de card objects
 class Card {
@@ -46,24 +51,22 @@ class Card {
 
 // API call om de kaarten van het json bestand te halen
 fetch("js/cards.json")
-.then(response => response.json())
-.then(data => {
-   myCardArray = data.map(card => new Card(card));
-  console.log(myCardArray);
-});
+  .then(response => response.json())
+  .then(data => {
+    myCardArray = data.map(card => new Card(card));
+    console.log(myCardArray);
+  });
 
 // popup om naam in te vullen
-function setName(){
-  if(!localStorage.hasOwnProperty("name")){
-    const firstName = prompt("Wat is je naam?");
+function setName() {
+  if (!localStorage.hasOwnProperty("name")) {
+    firstName = prompt("Wat is je naam?");
     localStorage.setItem("name", JSON.stringify(firstName));
-  }else{
+  } else {
     alert(`Welkom terug ${JSON.parse(localStorage.getItem("name"))}`);
   }
-  document.getElementById("welkom").innerHTML = `Welkom ${JSON.parse(localStorage.getItem("name")) }!`;
+  document.getElementById("welkom").innerHTML = `Welkom ${JSON.parse(localStorage.getItem("name"))}!`;
 }
-
-
 
 // Functie om de kaarten willekeurig te schudden.
 function fyShuffle(array) {
@@ -76,7 +79,7 @@ function fyShuffle(array) {
 }
 
 // houdt bij hoeveel beurten er in totaal zijn
-function nextMove(){
+function nextMove() {
   totalCount++;
   totalTurns.innerHTML = totalCount;
 }
@@ -88,27 +91,27 @@ function keepScore() {
 }
 
 // Start de tijd
-function startTimer(){
+function startTimer() {
   timer = setInterval(displayTimer, 1000);
 }
 
 // Laat de tijd in het scherm zien
-function displayTimer(){
-  if(seconds < 59){
+function displayTimer() {
+  if (seconds < 59) {
     seconds++;
   } else {
     seconds = 0;
     minutes++;
   }
-  
+
   const sec = seconds < 10 ? `0${seconds}` : seconds;
   const min = minutes < 10 ? `0${minutes}` : minutes;
-  
+
   time.innerHTML = `${min}:${sec}`;
 }
 
 // Stopt de tijd
-function stopTimer(){
+function stopTimer() {
   clearInterval(timer);
 }
 
@@ -133,17 +136,18 @@ function onSelectFieldSize(e) {
     default:
       boardClass = "";
   }
-  let DblCustomSizeArray = customSizeArray.concat(...customSizeArray); 
+  let DblCustomSizeArray = customSizeArray.concat(...customSizeArray);
   // Kaarten nogmaals schudden
   DblCustomSizeArray = fyShuffle(DblCustomSizeArray)
-  
+
   // call functie om de kaarten op het scherm te tonen
   populateField(DblCustomSizeArray);
-  
+
   //callback om de tijd te starten
   startTimer()
 
-  if(boardClass){
+  // Is een veld gekozen dan disable de select
+  if (boardClass) {
     select.removeEventListener("change", onSelectFieldSize);
     select.disabled = true;
   }
@@ -166,7 +170,7 @@ function populateField(cardSet) {
     // Voeg de image url van de afbeeldingen toe aan de src attribuut van de img elementen
     newCard.setAttribute("src", imageURL);
     // Naam van het dier toevoegen aan de img elementen
-    newCard.setAttribute("name", card.card1);    
+    newCard.setAttribute("name", card.card1);
     // Creer img elementen om de afbeeldingen af te dekken
     let newCover = document.createElement("img");
     // Voeg de image url van de afbeeldingen toe aan de src attribuut van de img elementen
@@ -192,9 +196,10 @@ function onClickCard(e) {
     //Loggen in console welke naam er verschijnt als je op een kaart klikt
     console.log(e.target.parentNode.firstChild.getAttribute("name"));
   }
-  
+  console.log(select.value)
+
   // Als 2 kaarten zijn geselecteerd verwijder de klik event listener
-  if(selectedCards.length === 1) {
+  if (selectedCards.length === 1) {
     myField.removeEventListener("click", onClickCard);
   }
   console.log(e.target.name)
@@ -202,40 +207,55 @@ function onClickCard(e) {
   evaluateMatch(e.target.name);
 
   // call functie om de geluiden af te spelen
-  // playSound(e.target.name);
+  playSound(e.target.name);
 
-  // Stopt de timer als alle kaarten zijn geraden
-  if (boardClass = "board4" && successCount === 8) {
+  //voer functies uit als aan bepaalde voorwaarden is voldaan
+  if (boardClass === "board4" && successCount === 8) {
+    //callback om de tijd te stoppen
     stopTimer();
+    //callback om highscore op te slaan in local storage
+    saveData();
+    //callback om highscore te tonen
+    showHighScores();
   }
-  if (boardClass = "board5" && successCount === 12) {
+  if (boardClass === "board5" && successCount === 12) {
+    //callback om de tijd te stoppen
     stopTimer();
+    //callback om highscore op te slaan in local storage
+    saveData();
+    //callback om highscore te tonen
+    showHighScores();
   }
-  if (boardClass = "board6" && successCount === 18) {
+  if (boardClass === "board6" && successCount === 18) {
+    //callback om de tijd te stoppen
     stopTimer();
+    //callback om highscore op te slaan in local storage
+    saveData();
+     //callback om highscore te tonen
+    showHighScores();
   }
-  saveData();
 }
 
-function playSound(name){
+// toevoegen van dierengeluiden aan de kaarten
+function playSound(name) {
   const sound = new Audio();
   sound.src = `snd/${name}.wav`;
   sound.play();
 }
 
 // functie om te kijken of de kaarten matchen
-function evaluateMatch(name){
+function evaluateMatch(name) {
   // voeg de naam van de kaart toe aan de array
-  if(selectedCards.length === 0){
+  if (selectedCards.length === 0) {
     selectedCards.push(name);
     cardOne = name;
     // voeg 2de naam toe aan de array
-  } else if(selectedCards.length === 1){
+  } else if (selectedCards.length === 1) {
     selectedCards.push(name);
     cardTwo = name;
     // vergelijk de namen van de kaarten
     //Als de kaarten matchen dan worden ze verwijderd
-    if(cardOne === cardTwo){
+    if (cardOne === cardTwo) {
       //wacht x aantal seconden met verwijderen
       setTimeout(function () {
         selectedCards.forEach(card => {
@@ -255,7 +275,7 @@ function evaluateMatch(name){
     // Als de kaarten niet matchen dan worden ze weer afgedekt
     else {
       //wacht x aantal seconden met afdekken
-      setTimeout(function(){
+      setTimeout(function () {
         let uncoveredCards = document.querySelectorAll(".uncovered");
         uncoveredCards.forEach(card => {
           card.className = "covered";
@@ -272,7 +292,7 @@ function evaluateMatch(name){
 }
 
 // Reset de game
-function resetGame(){
+function resetGame() {
   myField.innerHTML = "";
   totalCount = 0;
   successCount = 0;
@@ -286,22 +306,47 @@ function resetGame(){
   select.addEventListener("change", onSelectFieldSize);
   boardClass = "";
   select.disabled = false;
+  highScore.style.display = "none";
 }
 
-function saveData(){
-  let attempts = totalTurns.innerHTML;
-  let timer = time.innerHTML;
-  let matching = success.innerHTML;
-  let board = select.value;
-  let data = {
-    attempts,
-    matching,
-    timer,
-    board
+// sla de data op in local storage
+function saveData() {
+  // variabele voor de highscores
+  const attempts = totalTurns.innerHTML;
+  const timer = time.innerHTML;
+  const matching = success.innerHTML;
+  const board = select.value;
+  // een object aanmaken met de data
+  const highScoresObject = {
+    attempts: attempts,
+    matching: matching,
+    timer: timer,
+    board: board
   }
-  console.log(data);
-  let dataString = JSON.stringify(data);
-  localStorage.setItem("data", dataString);
+  // sla de data op in local storage array
+  highScores.push(highScoresObject);
+  // sorteer de array op aantal beurten
+  highScores.sort((a, b) => a.attempts - b.attempts);
+  // toon de beste 5 scores
+  highScores.splice(5);
+  // sla de array op in local storage als string
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+}
+
+//toon de highscores op het scherm
+function showHighScores() {
+  highScoreList.innerHTML = highScores
+    .map((score, index) => {
+      return `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${score.attempts}</td>
+      <td>${score.matching}</td>
+      <td>${score.timer}</td>
+      <td>${score.board}</td>
+    </tr>`
+     });
+     highScore.style.display = "block";
 }
 
 // Click event maken voor de kaarten 
