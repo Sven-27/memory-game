@@ -207,7 +207,7 @@ function onClickCard(e) {
   evaluateMatch(e.target.name);
 
   // call functie om de geluiden af te spelen
-  playSound(e.target.name);
+  // playSound(e.target.name);
 
   //voer functies uit als aan bepaalde voorwaarden is voldaan
   if (boardClass === "board4" && successCount === 8) {
@@ -261,7 +261,7 @@ function evaluateMatch(name) {
         selectedCards.forEach(card => {
           let cardElement = document.getElementsByName(card);
           cardElement.forEach(element => {
-            element.parentNode.remove();
+            element.parentNode.style.visibility = "hidden";
           })
         })
         // reset de array
@@ -326,8 +326,8 @@ function saveData() {
   // sla de data op in local storage array
   highScores.push(highScoresObject);
   // sorteer de array op aantal beurten
-  highScores.sort((a, b) => a.attempts - b.attempts);
-  // toon de beste 5 scores
+  highScores.sort((a, b) => a.attempts - b.attempts || a.board.localeCompare(b.board));
+  // toon de beste 5 scoresw
   highScores.splice(5);
   // sla de array op in local storage als string
   localStorage.setItem("highScores", JSON.stringify(highScores));
